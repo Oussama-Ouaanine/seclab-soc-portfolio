@@ -30,7 +30,7 @@
 - Primarily SaaS / Web Hosting
 
 ### Section 2: Validating the Problem
-**4. How do you currently monitor your server and application security?** (Multiple choice)
+**4. How do you currently monitor your server and application security?** (Checkboxes - Multiple selections allowed)
 - No continuous monitoring currently
 - Manual checking of basic logs (syslog, apache logs...)
 - Open-source tools (but operated separately / not correlated)
@@ -45,28 +45,36 @@
 - Requires dedicated staff we don't have
 
 ### Section 3: Testing the Idea
-**6. Are compliance requirements a major reason for improving your security?** (Checkboxes)
+**6. Is regulatory compliance a major driver for your security improvements?** (Multiple choice)
+- Yes, it's our primary driver
+- Somewhat, but not the main reason
+- No, we improve security for other reasons
+
+**7. Which compliance frameworks apply to your organization?** (Checkboxes)
 - GDPR (Data Privacy)
 - NIS2 / Cybersecurity Directives
 - ISO 27001 / SOC 2
-- No specific compliance obligations
+- None / Not applicable
 
-**7. If a "plug-and-play" open-source SOC was available (covering Network, OS, and App layers) with a pre-configured unified dashboard, would it solve a real pain point for your team?** (Multiple choice)
-- Yes, absolutely (It would save time and money)
-- Somewhat (I can see the usefulness, but it's not a priority)
-- Not really (We already have what we need)
+**8. If an open-source SOC (covering Network, OS, and App layers) with a pre-configured unified dashboard was available, would this address a real pain point for your team?** (Multiple choice)
+- Yes
+- Somewhat
 - No
 
-**8. Would you trust a pre-packaged solution based on industry standards like Suricata (Network), Falco (Host), and AppArmor (Prevention)?** (Multiple choice)
+**9. Would you trust a solution based on industry standards like Suricata (Network), Falco (Host), and AppArmor (Prevention)?** (Multiple choice)
 - Yes, these are solid open-source tools
 - No, I prefer enterprise proprietary solutions
-- I am not familiar enough with these tools to say
+- I'd want to evaluate them before trusting them
 
-**9. Do you have any additional feedback, features you would want, or advice for a project like this?** (Paragraph - Optional)
+**10. Do you have any additional feedback, features you would want, or advice for a project like this?** (Paragraph - Optional)
 - [ Free text answer ]
 
-**10. Would you be interested in acting as a beta tester or receiving news when our MVP is ready?** (Short answer - Optional)
-- [ Leave your email here - completely optional and confidential ]
+**11. Would you be interested in acting as a beta tester or receiving news when our MVP is ready?** (Checkboxes)
+- Yes, please contact me (leave email below)
+- No thanks
+
+**Email address:** (Short answer - Optional)
+- [ ______ ]
 
 
 <br><br>
@@ -100,7 +108,7 @@
 - Principalement hébergement web standard / SaaS
 
 ### Section 2 : Validation du Problème
-**4. Comment supervisez-vous actuellement la sécurité de vos serveurs et applications ?** (Choix multiple)
+**4. Comment supervisez-vous actuellement la sécurité de vos serveurs et applications ?** (Cases à cocher - Plusieurs choix possibles)
 - Aucune supervision continue pour le moment
 - Vérification manuelle de logs basiques (syslog, logs apache...)
 - Outils Open Source (mais séparés / non corrélés)
@@ -115,26 +123,34 @@
 - Nécessite du personnel dédié que nous n'avons pas
 
 ### Section 3 : Test de l'Idée
-**6. Les obligations de conformité sont-elles une raison majeure pour améliorer votre cybersécurité ?** (Cases à cocher)
+**6. La conformité réglementaire est-elle une raison majeure pour améliorer votre cybersécurité ?** (Choix multiple)
+- Oui, c'est notre moteur principal
+- Partiellement, mais ce n'est pas la seule raison
+- Non, nous nous améliorons pour d'autres raisons
+
+**7. Quelles obligations de conformité s'appliquent à votre organisation ?** (Cases à cocher)
 - RGPD (Protection des données)
 - NIS2 / Directive sécurité des réseaux
 - ISO 27001 / SOC 2
-- Aucune obligation de conformité spécifique
+- Aucune / Non applicable
 
-**7. Si un SOC open-source "prêt à l'emploi" (couvrant les couches réseau, système et applicative) avec un tableau de bord unifié pré-configuré existait, cela résoudrait-il une vraie difficulté pour votre équipe ?** (Choix multiple)
-- Oui, absolument (gain de temps et d'argent)
-- Partiellement (c'est utile, mais pas prioritaire)
-- Pas vraiment (nous sommes déjà bien équipés)
+**8. Si un SOC open-source (couvrant les couches réseau, système et applicative) avec un tableau de bord unifié pré-configuré existait, cela résoudrait-il une vraie difficulté pour votre équipe ?** (Choix multiple)
+- Oui
+- Partiellement
 - Non
 
-**8. Ferez-vous confiance à une solution packagée s'appuyant sur des standards comme Suricata (Réseau), Falco (Hôte) et AppArmor (Prévention) ?** (Choix multiple)
+**9. Ferez-vous confiance à une solution s'appuyant sur des standards comme Suricata (Réseau), Falco (Hôte) et AppArmor (Prévention) ?** (Choix multiple)
 - Oui, ce sont des outils open-source reconnus et solides
 - Non, je préfère les solutions propriétaires d'entreprise
-- Je ne connais pas assez ces outils pour me prononcer
+- Je voudrais d'abord les évaluer avant de faire confiance
 
-**9. Avez-vous des remarques, des fonctionnalités souhaitées ou des conseils pour ce projet ?** (Paragraphe - Facultatif)
+**10. Avez-vous des remarques, des fonctionnalités souhaitées ou des conseils pour ce projet ?** (Paragraphe - Facultatif)
 - [ Réponse libre ]
 
-**10. Seriez-vous intéressé(e) pour tester en avant-première ou recevoir des nouvelles de notre MVP ?** (Réponse courte - Facultatif)
-- [ Laissez votre adresse email ici - totalement optionnel et confidentiel ]
+**11. Seriez-vous intéressé(e) pour tester en avant-première notre MVP ou recevoir de nos nouvelles ?** (Cases à cocher)
+- Oui, contactez-moi (laissez votre email ci-dessous)
+- Non merci
+
+**Adresse email :** (Réponse courte - Facultatif)
+- [ ______ ]
 EOF
