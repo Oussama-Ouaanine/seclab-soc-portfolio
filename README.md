@@ -1,8 +1,13 @@
-# Cybersecurity Student Portfolio
+# 🛡️ Cybersecurity Portfolio & SOC-in-a-Box Lab
 
-Hi, I’m a cybersecurity student building a practical security lab and documentation portfolio.
+[![Status: Active](https://img.shields.io/badge/Status-Active-success.svg)](#)
+[![Role: Cybersecurity Student](https://img.shields.io/badge/Role-Cybersecurity_Student-blue.svg)](#)
+[![Stack: Elastic | Suricata | Falco](https://img.shields.io/badge/Stack-Elastic_|_Suricata_|_Falco-orange.svg)](#)
 
-This repository showcases a local vulnerable web application protected and monitored with multiple security layers. It is meant to demonstrate hands-on work in:
+> **Hi, I’m an aspiring Cybersecurity Engineer and Entrepreneur.**
+> Welcome to my portfolio! This repository highlights my ability to design, implement, and monitor a complete defensive infrastructure, fusing deep technical security measures with a strategic, business-oriented Go-To-Market plan.
+
+This repository showcases **SecLab**, a custom local web application protected and monitored with multiple security layers. It is meant to demonstrate hands-on work in:
 
 - web application security
 - defensive architecture

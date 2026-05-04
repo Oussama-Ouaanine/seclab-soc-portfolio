@@ -1,0 +1,2 @@
+You have a projet (PFA) with a cahier des charges already done. Now, your entrepreneuriat teacher gave you a TP to answer — but the goal is to answer it in a way that leads naturally to your project, as if the TP questions are guiding you to "discover" or justify your project idea.
+So basically, I need to answer the TP questions in French, simply and clearly, but in a way that the answers align with and point toward your existing cahier des charges
