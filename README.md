@@ -1,72 +1,91 @@
-# 🛡️ Cybersecurity Portfolio & SOC-in-a-Box Lab
+# SecLab : Architecture SOC-in-a-Box & Défense en Profondeur 🛡️
 
-[![Status: Active](https://img.shields.io/badge/Status-Active-success.svg)](#)
-[![Role: Cybersecurity Student](https://img.shields.io/badge/Role-Cybersecurity_Student-blue.svg)](#)
-[![Stack: Elastic | Suricata | Falco](https://img.shields.io/badge/Stack-Elastic_|_Suricata_|_Falco-orange.svg)](#)
+[![Projet de Fin d'Année](https://img.shields.io/badge/Type-Projet_de_Fin_d'Année_M2-blue.svg)](#)
+[![Stack: Elastic | Suricata | Falco | AppArmor](https://img.shields.io/badge/Stack-ELK_|_Suricata_|_Falco_|_AppArmor-orange.svg)](#)
+[![Statut: MVP Technique](https://img.shields.io/badge/Statut-MVP_Technique_Validé-success.svg)](#)
 
-> **Hi, I’m an aspiring Cybersecurity Engineer and Entrepreneur.**
-> Welcome to my portfolio! This repository highlights my ability to design, implement, and monitor a complete defensive infrastructure, fusing deep technical security measures with a strategic, business-oriented Go-To-Market plan.
+**SecLab** est un projet d'ingénierie en cybersécurité complet (Projet de Fin d'Année). Il s'agit du déploiement d'un laboratoire de sécurité contrôlé (Proof of Concept) visant à construire une architecture de détection et de supervision multi-couches pour les systèmes Linux. 
 
-This repository showcases **SecLab**, a custom local web application protected and monitored with multiple security layers. It is meant to demonstrate hands-on work in:
+Dans une démarche entrepreneuriale B2B, cette architecture technique a été pensée et packagée comme une solution **"SOC-in-a-Box" (SOC as a Service)** open-source, destinée à lever les barrières financières et techniques empêchant les PME de se doter d'une supervision de sécurité proactive.
 
-- web application security
-- defensive architecture
-- monitoring and detection
-- security reporting and documentation
-- entrepreneurship-oriented security thinking
+---
 
-## Project Snapshot
+## 🎯 Objectifs du Projet
 
-The lab is based on a custom vulnerable web application called **SecLab** running on **Apache + PostgreSQL**. The goal is to study how attacks can be detected, blocked, and visualized across different layers.
+1. **Défense en Profondeur :** Concevoir une architecture combinant la surveillance réseau (NIDS), la détection comportementale hôte (HIDS) et le contrôle d'accès (MAC).
+2. **Centralisation SIEM :** Construire un pipeline complet de collecte, d'indexation et de visualisation d'événements de sécurité.
+3. **Validation Offensive :** Simuler un scénario d'attaque complet (Cyber Kill Chain) sur une application web vulnérable développée sur-mesure pour éprouver les capacités de détection.
+4. **Dimension Entrepreneuriat :** Valider le besoin marché des PME (via questionnaire) et modéliser le business plan d'un service de supervision infogéré.
 
-### Security stack used
+---
 
-- **Suricata** for network intrusion detection
-- **Falco** for runtime/syscall detection
-- **AppArmor** for access control and prevention
-- **Filebeat / Auditbeat** for log shipping
-- **Elasticsearch / Kibana** for log storage and dashboards
+## 🏗️ Architecture du Laboratoire
 
-## What’s in this repository
+Le laboratoire repose sur un environnement virtualisé isolé (LAN interne host-only) structuré autour de 3 Machines Virtuelles et d'une machine hôte (Attaquant) :
 
-The public content is organized in the `docs/` folder:
+* **Hôte (Attaquant) :** Simulation des attaques (Nmap, Netcat, navigateurs, scripts).
+* **VM Target (Cible) :** Serveur hébergeant l'application web métier **SecLab** (Apache + PostgreSQL). Protégée par **Falco** (détection des syscalls) et **AppArmor** (restrictions MAC).
+* **VM Suricata (NIDS) :** Interface réseau en mode miroir (SPAN port) écoutant passivement le trafic entre l'attaquant et la cible via **Suricata**. Ne bloque pas le trafic pour éviter les interruptions de service métier.
+* **VM Monitoring (SIEM) :** La tour de contrôle logicielle (Stack **Elasticsearch & Kibana**). Elle ingère toutes les alertes réseau (Suricata) et système (Falco, AppArmor, Auth) expédiées par **Filebeat**.
 
-- `docs/defense/` — Suricata, Falco, and AppArmor documentation
-- `docs/vulnerabilities/` — vulnerability analysis and security notes
-- `docs/gestion_projet/` — academic project documents and final report outline
+### 🔄 Flux Logique
 
-## Why this project matters
+```text
+┌─────────────┐       Trafic réseau cible      ┌──────────────────┐
+│    Hôte     │───────────────────────────────▶│     VM Target    │
+│  Attaquant  │                                │  SecLab (Appli)  │
+└──────┬──────┘                                │  Falco + AppArmor│
+       │                                       └────────┬─────────┘
+       │ Copie miroir (SPAN)                            │
+       ▼                                                │
+┌─────────────┐                                         │
+│ VM Suricata │                                         │
+│   (NIDS)    │                                         │
+└──────┬──────┘                                         │
+       │                                                │
+       └────────────────────────────────────────────────┘
+                          Alertes (Filebeat)
+                                  ▼
+                        ┌──────────────────┐
+                        │   VM Monitoring  │
+                        │    (ELK Stack)   │
+                        └──────────────────┘
+```
 
-This work shows that I can:
+---
 
-- analyze a vulnerable system
-- keep intentional flaws for security testing
-- document findings clearly
-- design a layered defense strategy
-- connect technical work with a business and entrepreneurship perspective
+## ⚔️ Validation par la Cyber Kill Chain
 
-## Academic + Entrepreneurship angle
+L'architecture est testée activement via un scénario d'intrusion réaliste pour valider la réaction de chaque couche de sécurité :
 
-My final report combines the technical lab with a business view of the project as a **cybersecurity solution that could be sold to small and medium businesses**.
+| Phase Lockheed Martin | Action Attaquant | Détection / Prévention | Couche activée |
+|-----------------------|------------------|------------------------|----------------|
+| **1. Reconnaissance** | Scan Nmap agressif | Alerte pattern de scan réseau | **Suricata** (NIDS) |
+| **2. Interaction** | Navigation, fuzzing formulaires | Analyse trafic HTTP | **Suricata** (NIDS) |
+| **3. Exploitation** | Payload SQLi / RCE web | Détection de signatures d'attaque | **Suricata** (NIDS) |
+| **4. Accès Initial** | Lancement d'un Reverse Shell | Alerte : Shell spawné par serveur web | **Falco** (HIDS / eBPF) |
+| **5. Post-Exploitation**| Tentative de lecture `/etc/shadow` | **Blocage total** de l'accès fichier | **AppArmor** (MAC) |
 
-That means the report includes:
+Toutes ces étapes sont automatiquement corrélées et horodatées au sein des tableaux de bord **Kibana**, permettant au "SOC Analyst" virtuel de reconstituer l'attaque de bout en bout.
 
-- market analysis
-- SWOT / PESTEL / Porter’s Five Forces
-- technical feasibility
-- commercial strategy
-- financial assumptions
+---
 
-## How to read the docs
+## 📂 Documentation et Livrables
 
-Start here:
+L'ensemble de la documentation académique, technique et business est disponible dans le répertoire `docs/`.
 
-1. `docs/gestion_projet/cahier_des_charges_v1_4.md`
-2. `docs/gestion_projet/rapport_outline.md`
-3. `docs/defense/suricata.md`
-4. `docs/defense/falco.md`
-5. `docs/defense/apparmor.md`
+### 1. Ingénierie & Gestion de Projet
+- `docs/gestion_projet/cahier_des_charges_v1_4.md` : Les spécifications techniques complètes, l'architecture réseau et la planification (Gantt/PERT).
+- `docs/gestion_projet/rapport_outline.md` : Le plan détaillé du rapport final, mixant l'état de l'art technique et le Business Plan (SWOT, PESTEL, Porter).
 
-## Note
+### 2. Validation Business (Entrepreneuriat)
+- `docs/gestion_projet/Reponses_TP1_Origine_Idee.md` : La genèse de l'idée, défectuologie et validation du concept MVP.
+- `docs/gestion_projet/Questionnaire_Validation_Marche.md` : Matrice d'enquête marché (français/anglais) pour valider le modèle "SOC-in-a-Box" auprès des PME.
 
-This repository is for academic and portfolio purposes only. The lab is intentionally vulnerable for controlled security testing and learning.
+### 3. Fiches de Configuration (Défense & Vulnérabilités)
+- `docs/defense/` : Notes techniques de déploiement pour AppArmor, Falco et Suricata.
+- `docs/vulnerabilities/` : Liste des failles et CVEs intentionnellement intégrées dans l'application SecLab patient-zéro.
+
+---
+
+*Développé dans le cadre d'un Projet de Fin d'Année (Ingénierie Cybersécurité) par Oussama Ouaanine, Nada Rihi et Aya Er-raoudy.*
