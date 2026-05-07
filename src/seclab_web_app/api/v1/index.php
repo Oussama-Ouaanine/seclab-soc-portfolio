@@ -3,14 +3,14 @@
 header("Content-Type: application/json");
 
 // Inclusion de ton fichier de configuration
-require_once __DIR__ . '/../config.php'; 
+require_once __DIR__ . '/../../config.php'; 
 
 // Initialisation de la connexion PDO avec tes variables
 $conn = new postgres_mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     http_response_code(500);
-    echo json_encode(["error" => "Connexion échouée : " . $e->getMessage()]);
+    echo json_encode(["error" => "Connexion échouée : " . $conn->connect_error]);
     exit;
 }
 
@@ -40,7 +40,7 @@ function handleProduct($conn, $method, $id) {
         $result = $conn->query($sql);
         if ($result) {
             // fetch_all permet de voir TOUTES les lignes (indispensable pour l'UNION)
-            echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+            echo json_encode($result->fetch_all(PDO::FETCH_ASSOC));
         } else {
             // On affiche l'erreur SQL : très utile pour aider l'attaquant à ajuster son injection
             echo json_encode(["sql_error" => $conn->error, "query" => $sql]);
@@ -101,7 +101,7 @@ function handleAccount($conn, $method, $id) {
         if ($result) {
             // Avec mysqli, on utilise fetch_all pour récupérer toutes les lignes
             // (Utile pour voir le résultat d'un UNION SELECT)
-            echo json_encode($result->fetch_all(MYSQLI_ASSOC));
+            echo json_encode($result->fetch_all(PDO::FETCH_ASSOC));
         } else {
             echo json_encode(["sql_error" => $conn->error]);
         }

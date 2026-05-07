@@ -31,7 +31,7 @@ class postgres_mysqli {
             $this->error = $errorInfo[2];
             return false;
         }
-        return new mysqli_result_proxy($stmt);
+        return new postgres_mysqli_result_proxy($stmt);
     }
 
     public function real_escape_string($str) {
