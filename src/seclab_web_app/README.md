@@ -60,3 +60,22 @@ sudo systemctl restart postgresql
 ```
 
 Then access the application via your browser: `http://localhost/` or your Target VM's IP address.
+
+---
+
+## 🐛 Known Vulnerabilities (For Pentesting)
+
+This application was mapped to the OWASP Top 10 to practice detection (NIDS/HIDS) and incident response. Below is a summary of the intentional vulnerabilities:
+
+### 1. REST APIs (`/api/v1/`)
+* **SQL Injection (SQLi):** Parameters passed in `GET` (e.g., `id`) and `DELETE` requests are directly concatenated into the SQL queries without sanitization. Errors are explicitly returned in the JSON response to aid attackers (`sql_error`).
+* **Mass Assignment / Broken Object Property Level Authorization (BOPLA):** The `POST` and `PUT` methods for the `user` resource dynamically parse **all** keys from the incoming JSON payload into the database query. Attackers can inject fields like `"profile": "admin"` to escalate privileges.
+* **Broken Object Level Authorization (BOLA/IDOR):** Any user can modify or delete resources belonging to others by simply changing the `id` in the API request (e.g., sending `DELETE /api/v1/product/5`).
+
+### 2. GraphQL API (`/api/v2/`)
+* **Sensitive Data Exposure:** The GraphQL schema explicitly exposes sensitive fields such as the user's `password` (hashed) and their `role` directly through introspection and querying.
+* **SQL Injection:** GraphQL queries taking arguments (like `name`) are concatenated blindly into the backend queries.
+
+### 3. Frontend Application
+* **Cross-Site Scripting (XSS):** User inputs in forms and URL parameters are often reflected directly on the HTML pages (e.g., `profile.php`, searches) without being escaped.
+* **Broken Authentication:** The `config.php` database proxy explicitly uses weak database connections without prepared statements (using a custom `postgres_mysqli` wrapper to simulate legacy, insecure code over PostgreSQL).

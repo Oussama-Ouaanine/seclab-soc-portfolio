@@ -117,6 +117,15 @@ sudo systemctl restart apache2
 sudo systemctl restart postgresql
 ```
 
+### 🐛 Known Vulnerabilities Summary
+The SecLab Web App and its APIs (`/api/v1/`, `/api/v2/graphql`) are intentionally equipped with flaws from the OWASP Top 10, including:
+* **SQL Injection (SQLi):** Parameters map directly to SQL queries (bypassing PDO safety wrappers).
+* **Mass Assignment (BOPLA) & BOLA:** APIs allow injecting arbitrary fields into DB updates and modifying other users' resources.
+* **Sensitive Data Exposure:** Exposed password hashes and roles via GraphQL endpoints.
+* **XSS:** Unsanitized user inputs reflected on the web pages.
+
+*(For detailed information on the specific vulnerabilities, see the [Web App README](src/seclab_web_app/README.md).)*
+
 ---
 
 ## 📂 Documentation et Livrables
