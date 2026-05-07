@@ -70,48 +70,48 @@ Toutes ces étapes sont automatiquement corrélées et horodatées au sein des t
 
 ---
 
-## 🚀 Déploiement de l'Application Cible (SecLab Web App)
+## 🚀 Target Application Deployment (SecLab Web App)
 
-Le dossier `src/seclab_web_app/` contient le code source de l'application e-commerce utilisée comme cible ("Patient Zéro") dans cet environnement.
+The `src/seclab_web_app/` directory contains the source code for the vulnerable e-commerce application used as the target ("Patient Zero") in this environment.
 
-> ⚠️ **AVERTISSEMENT :** Cette application est INTENTIONNELLEMENT VULNÉRABLE (Injections SQL, XSS, etc.). **Ne la déployez jamais sur un serveur de production ou exposé sur Internet.** Utilisez-la uniquement dans un environnement local isolé (Machine Virtuelle Target).
+> ⚠️ **WARNING:** This application is INTENTIONALLY VULNERABLE (SQL Injections, XSS, etc.). **Never deploy it on a production server or expose it to the Internet.** Use it only in an isolated local environment (Target Virtual Machine).
 
-### 📋 Prérequis
-* Un serveur Web (Apache2 ou Nginx)
-* PHP (avec les extensions PDO et pgsql : `php-pgsql`)
+### 📋 Prerequisites
+* A Web server (Apache2 or Nginx)
+* PHP (with PDO and pgsql extensions: `php-pgsql`)
 * PostgreSQL
 
-### Étape 1 : Déploiement des fichiers
-Déplacez le code source vers le répertoire de votre serveur web (souvent `/var/www/html`).
+### Step 1: Deploy Files
+Move the source code to your web server's root directory (often `/var/www/html`).
 ```bash
 sudo cp -r src/seclab_web_app/* /var/www/html/
 sudo chown -R www-data:www-data /var/www/html/
 ```
 
-### Étape 2 : Base de Données (PostgreSQL)
-L'application communique par défaut avec une base de données PostgreSQL. Connectez-vous à votre serveur :
+### Step 2: Database (PostgreSQL)
+The application communicates with a PostgreSQL database by default. Connect to your server:
 ```bash
 sudo -u postgres psql
 ```
-Créez la base et configurez les identifiants par défaut par l'application :
+Create the database and set the default credentials expected by the application:
 ```sql
 CREATE DATABASE "Test_Lab";
 ALTER USER postgres WITH PASSWORD '123456';
 \q
 ```
-*(Si vous avez un fichier dump `.sql` pour regénérer les tables `users`, `products`, etc., importez-le dans cette base.)*
+*(If you have a `.sql` dump file to regenerate the `users`, `products` tables, etc., import it into this database.)*
 
-### Étape 3 : Configuration
-Si vous souhaitez utiliser des identifiants PostgreSQL différents, modifiez le fichier `config.php` :
+### Step 3: Configuration
+If you want to use different PostgreSQL credentials, modify the `config.php` file:
 ```php
 $servername = "127.0.0.1";
-$username   = "postgres";    // Nom d'utilisateur de la BDD
-$password   = "123456";      // Mot de passe de la BDD
-$dbname     = "Test_Lab";    // Nom de la base de données
+$username   = "postgres";    // Database username
+$password   = "123456";      // Database password
+$dbname     = "Test_Lab";    // Database name
 ```
 
-### Étape 4 : Lancement
-Redémarrez vos services et accédez à l'application via le navigateur du réseau interne :
+### Step 4: Start the Application
+Restart your services and access the application via your internal network browser:
 ```bash
 sudo systemctl restart apache2
 sudo systemctl restart postgresql
