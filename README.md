@@ -70,6 +70,55 @@ Toutes ces étapes sont automatiquement corrélées et horodatées au sein des t
 
 ---
 
+## 🚀 Déploiement de l'Application Cible (SecLab Web App)
+
+Le dossier `src/seclab_web_app/` contient le code source de l'application e-commerce utilisée comme cible ("Patient Zéro") dans cet environnement.
+
+> ⚠️ **AVERTISSEMENT :** Cette application est INTENTIONNELLEMENT VULNÉRABLE (Injections SQL, XSS, etc.). **Ne la déployez jamais sur un serveur de production ou exposé sur Internet.** Utilisez-la uniquement dans un environnement local isolé (Machine Virtuelle Target).
+
+### 📋 Prérequis
+* Un serveur Web (Apache2 ou Nginx)
+* PHP (avec les extensions PDO et pgsql : `php-pgsql`)
+* PostgreSQL
+
+### Étape 1 : Déploiement des fichiers
+Déplacez le code source vers le répertoire de votre serveur web (souvent `/var/www/html`).
+```bash
+sudo cp -r src/seclab_web_app/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html/
+```
+
+### Étape 2 : Base de Données (PostgreSQL)
+L'application communique par défaut avec une base de données PostgreSQL. Connectez-vous à votre serveur :
+```bash
+sudo -u postgres psql
+```
+Créez la base et configurez les identifiants par défaut par l'application :
+```sql
+CREATE DATABASE "Test_Lab";
+ALTER USER postgres WITH PASSWORD '123456';
+\q
+```
+*(Si vous avez un fichier dump `.sql` pour regénérer les tables `users`, `products`, etc., importez-le dans cette base.)*
+
+### Étape 3 : Configuration
+Si vous souhaitez utiliser des identifiants PostgreSQL différents, modifiez le fichier `config.php` :
+```php
+$servername = "127.0.0.1";
+$username   = "postgres";    // Nom d'utilisateur de la BDD
+$password   = "123456";      // Mot de passe de la BDD
+$dbname     = "Test_Lab";    // Nom de la base de données
+```
+
+### Étape 4 : Lancement
+Redémarrez vos services et accédez à l'application via le navigateur du réseau interne :
+```bash
+sudo systemctl restart apache2
+sudo systemctl restart postgresql
+```
+
+---
+
 ## 📂 Documentation et Livrables
 
 L'ensemble de la documentation académique, technique et business est disponible dans le répertoire `docs/`.
