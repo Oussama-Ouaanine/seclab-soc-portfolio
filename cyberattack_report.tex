@@ -47,7 +47,7 @@
 
 \maketitle
 \begin{abstract}
-This academic report documents a full cyberattack kill chain executed against the SecLab vulnerable environment. It traces the attack from initial reconnaissance using Nmap, to taking control of the server via SQL Injection and RCE, followed by a privilege escalation to root. The second phase of the report demonstrates the defensive containment strategy, proving that applying OS-level Mandatory Access Control (AppArmor) effectively neutralizes such attacks.
+This academic report documents a full cyberattack kill chain executed against the SecLab vulnerable environment. It traces the attack from initial reconnaissance using Nmap, to taking control of the server via SQL Injection on the index page, OS command injection on the admin page, followed by a privilege escalation to root using a CopyFAIL-based script. The second phase of the report demonstrates the defensive containment strategy, proving that applying OS-level Mandatory Access Control (AppArmor) effectively neutralizes such attacks.
 \end{abstract}
 \newpage
 \tableofcontents
@@ -74,26 +74,35 @@ Following port discovery, the application endpoint map was established using FFU
 \end{figure}
 
 \section{Phase 2: Initial Access (SQL Injection)}
-The attacker interacted with the web application's login portal. Utilizing a classic boolean-based SQL injection payload (\texttt{'or 1=1 -- -}) within the email input field, the authentication mechanism was entirely bypassed.
+The attacker first navigated to the main landing page of the application (\texttt{index.html} / \texttt{index.php}), which presented the primary login portal. Utilizing a classic boolean-based SQL injection payload (\texttt{'or 1=1 -- -}) within the email input field, the authentication mechanism was entirely bypassed.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-08-00.png}
-    \caption{Bypassing authentication via SQL injection.}
+    \caption{Bypassing authentication via SQL injection on the index page login portal.}
     \label{fig:sqli}
 \end{figure}
 
 \section{Phase 3: Exploitation and Remote Code Execution (RCE)}
-Once authenticated, the attacker navigated to an internal administrative panel labeled ``Diagnostic Serveur''. This utility, meant for server debugging, was identified as vulnerable to Command Injection due to improper sanitization of semicolons (\texttt{;}).
+Once authenticated, the attacker navigated to the restricted admin page, locating an internal administrative panel labeled ``Diagnostic Serveur''. This utility, meant for server debugging, was identified as vulnerable to OS Command Injection due to improper sanitization of semicolons (\texttt{;}).
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-09-42.png}
-    \caption{Execution of \texttt{whoami} via the Diagnostic Interface returning \texttt{www-data}.}
+    \caption{Execution of \texttt{whoami} via the admin Diagnostic Interface returning \texttt{www-data}.}
     \label{fig:vuln_rce}
 \end{figure}
 
-With execution capabilities confirmed, the attacker delivered a Python 3 reverse shell payload designed to connect back to their listening node.
+With execution capabilities confirmed, the attacker constructed an intricate Python 3 reverse shell script to launch a persistent connection. Figure \ref{fig:rev_shell_script} displays the exact script utilized for the payload.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-15-08.png}
+    \caption{Close-up of the initial Python 3 reverse shell script crafted for the payload.}
+    \label{fig:rev_shell_script}
+\end{figure}
+
+The script was then delivered via the vulnerable admin interface.
 
 \begin{figure}[H]
     \centering
@@ -112,7 +121,16 @@ The shell was successfully caught by the active Netcat listener on the attacking
 \end{figure}
 
 \section{Phase 4: Privilege Escalation and Objectives}
-After obtaining the initial shell, the attacker delivered deeply obfuscated exploit tooling, notably a Python script named \texttt{Ergo.py}. Executing the script manipulated standard system constructs to launch a detached sub-command requesting an escalation to Superuser.
+After obtaining the initial shell, the attacker delivered deeply obfuscated exploit tooling, notably a Python script named \texttt{Ergo.py}. This script leverages a known kernel methodology (CopyFAIL / similar exploit structures).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 14-06-02.png}
+    \caption{Content of \texttt{Ergo.py} displaying the highly obfuscated CopyFAIL privilege escalation script.}
+    \label{fig:ergo_script}
+\end{figure}
+
+Executing the script manipulated standard system constructs to launch a detached sub-command requesting an escalation to Superuser.
 
 \begin{figure}[H]
     \centering
