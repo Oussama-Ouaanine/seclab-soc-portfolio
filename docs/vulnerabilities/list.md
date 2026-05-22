@@ -1,6 +1,6 @@
 # Security Lab - Vulnerability Report
 
-This comprehensive list outlines all the intentional vulnerabilities identified in the active web application currently running from `/var/www/security-lab/`. The application exhibits various textbook security flaws spanning the OWASP Top 10, perfect for penetration testing scenarios using OWASP ZAP.
+This comprehensive list outlines all the intentional vulnerabilities identified in the active web application currently running from `/var/www/html/`. The application exhibits various textbook security flaws spanning the OWASP Top 10, perfect for penetration testing scenarios using OWASP ZAP.
 
 ## 1. Authentication Bypass & SQL Injections (SQLi)
 * **Login Authentication Bypass:**
@@ -61,4 +61,4 @@ This comprehensive list outlines all the intentional vulnerabilities identified 
 
 ## 12. Information Disclosure
 * **Files:** `composer.json`, `composer.lock`
-* **Description:** The PHP dependency management files are hosted directly within the public webroot (`/var/www/security-lab/`). An attacker can easily download them to identify exactly what libraries and versions the server is running, aiding in identifying known CVEs.
+* **Description:** The PHP dependency management files are hosted directly within the public webroot (`/var/www/html/`). An attacker can easily download them to identify exactly what libraries and versions the server is running, aiding in identifying known CVEs.

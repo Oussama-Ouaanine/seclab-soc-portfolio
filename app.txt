@@ -1,0 +1,69 @@
+ergo@ergoweb:~$ sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.apache2
+ergo@ergoweb:~$ sudo vim /etc/apparmor.d/usr.sbin.apache2
+ergo@ergoweb:~$ sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.apache2
+ergo@ergoweb:~$ sudo cat /etc/apparmor.d/usr.sbin.apache2
+#include <tunables/global>
+
+  profile /usr/sbin/apache2 flags=(attach_disconnected,enforce) {
+
+  # Base abstractions
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/apache2-common>
+  #include <abstractions/php>
+
+  #
+  # Capabilities
+  #
+  capability net_bind_service,
+  capability setgid,
+  capability setuid,
+
+  #
+  # Apache binary
+  #
+  /usr/sbin/apache2 mr,
+
+  #
+  # Config files
+  #
+  /etc/apache2/** r,
+  /etc/mime.types r,
+
+  #
+  # Web content
+  #
+  /var/www/** r,
+
+  #
+  # Logs
+ 
+  /var/log/apache2/** rw,
+
+  #
+  # Runtime files
+  #
+  /run/apache2/** rwk,
+  /var/run/apache2/** rwk,
+
+  #
+  # systemd notify socket
+  #
+  /run/systemd/notify w,
+
+  #
+  # Temporary files
+  #
+  /tmp/** rw,
+
+  #
+  # Deny dangerous shells/tools
+  #
+  deny /bin/sh x,
+  deny /bin/bash x,
+  deny /bin/dash x,
+  deny /usr/bin/whoami x,
+  deny /usr/bin/id x,
+}
+ergo@ergoweb:~$ 
+

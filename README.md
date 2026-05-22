@@ -117,6 +117,25 @@ sudo systemctl restart apache2
 sudo systemctl restart postgresql
 ```
 
+### Step 5: Enforcing Security Controls (AppArmor)
+To protect the target against complete server compromise (e.g., stopping RCE shells or file inclusion), apply the included AppArmor profiles. For the full configuration, see [`docs/defense/apparmor_rules.md`](docs/defense/apparmor_rules.md).
+
+**Quick AppArmor Commands:**
+* **Reload Profiles**:
+  ```bash
+  sudo apparmor_parser -r /etc/apparmor.d/restricted-shell
+  sudo apparmor_parser -r /etc/apparmor.d/usr.sbin.apache2
+  sudo systemctl restart apache2
+  ```
+* **Disable Profiles**:
+  ```bash
+  sudo apparmor_parser -R /etc/apparmor.d/restricted-shell
+  sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.apache2
+  sudo systemctl restart apache2
+  ```
+* **Verify Status**: `sudo aa-status | grep apach`
+* **Check Logs for Denials**: `sudo dmesg -w | grep DENIED`
+
 ### 🐛 Known Vulnerabilities Summary (For Pentesting)
 The SecLab Web App is intentionally equipped with flaws from the OWASP Top 10 to train SOC analysts. Below is a breakdown of the specific vulnerabilities:
 
