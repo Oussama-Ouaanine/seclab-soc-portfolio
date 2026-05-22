@@ -1,0 +1,177 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{grffile}
+
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+\title{
+{\Huge \textbf{Cyberattack Kill Chain Report}}\\
+\vspace{0.5cm}
+{\Large Intrusion Scenario and Mitigation via AppArmor}
+}
+\author{SOC Analyst / Security Engineer}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\begin{abstract}
+This academic report documents a full cyberattack kill chain executed against the SecLab vulnerable environment. It traces the attack from initial reconnaissance using Nmap, to taking control of the server via SQL Injection and RCE, followed by a privilege escalation to root. The second phase of the report demonstrates the defensive containment strategy, proving that applying OS-level Mandatory Access Control (AppArmor) effectively neutralizes such attacks.
+\end{abstract}
+\newpage
+\tableofcontents
+\newpage
+
+\section{Phase 1: Reconnaissance and Discovery}
+The attack commenced with network enumeration to map the target infrastructure.
+An Nmap scan against the target IP range successfully identified the victim machine at \texttt{192.168.0.47}. The scan reported an open HTTP port (80) running Apache httpd.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 12-52-13.png}
+    \caption{Nmap scan revealing open standard TCP ports, including Port 80.}
+    \label{fig:nmap}
+\end{figure}
+
+Following port discovery, the application endpoint map was established using FFUF (Fuzz Faster U Fool) against the discovered HTTP server.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-07-13.png}
+    \caption{Directory fuzzing exposing sensitive paths like \texttt{/admin/} and \texttt{/api/}.}
+    \label{fig:ffuf}
+\end{figure}
+
+\section{Phase 2: Initial Access (SQL Injection)}
+The attacker interacted with the web application's login portal. Utilizing a classic boolean-based SQL injection payload (\texttt{'or 1=1 -- -}) within the email input field, the authentication mechanism was entirely bypassed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-08-00.png}
+    \caption{Bypassing authentication via SQL injection.}
+    \label{fig:sqli}
+\end{figure}
+
+\section{Phase 3: Exploitation and Remote Code Execution (RCE)}
+Once authenticated, the attacker navigated to an internal administrative panel labeled ``Diagnostic Serveur''. This utility, meant for server debugging, was identified as vulnerable to Command Injection due to improper sanitization of semicolons (\texttt{;}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-09-42.png}
+    \caption{Execution of \texttt{whoami} via the Diagnostic Interface returning \texttt{www-data}.}
+    \label{fig:vuln_rce}
+\end{figure}
+
+With execution capabilities confirmed, the attacker delivered a Python 3 reverse shell payload designed to connect back to their listening node.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-15-20.png}
+    \caption{Delivery of the Python 3 reverse shell payload.}
+    \label{fig:rev_shell_payload}
+\end{figure}
+
+The shell was successfully caught by the active Netcat listener on the attacking machine, granting interactive lower-privileged (\texttt{www-data}) terminal access to the web server.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-15-31.png}
+    \caption{Interactive reverse shell session established.}
+    \label{fig:rev_shell_catch}
+\end{figure}
+
+\section{Phase 4: Privilege Escalation and Objectives}
+After obtaining the initial shell, the attacker delivered deeply obfuscated exploit tooling, notably a Python script named \texttt{Ergo.py}. Executing the script manipulated standard system constructs to launch a detached sub-command requesting an escalation to Superuser.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-24-21.png}
+    \caption{Privilege Escalation from \texttt{www-data} to \texttt{root} (uid=0) via \texttt{Ergo.py}.}
+    \label{fig:priv_esc}
+\end{figure}
+
+The attacker now possessed full system control, confirmed by extracting the highly protected \texttt{/etc/shadow} file containing system credential hashes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-24-38.png}
+    \caption{Extracting the \texttt{/etc/shadow} file indicating a full system compromise.}
+    \label{fig:etc_shadow}
+\end{figure}
+
+\section{Phase 5: Implementation of Defense in Depth (AppArmor)}
+
+To rectify this architectural weakness, the administrator implemented and activated Mandatory Access Control profiles via AppArmor. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-26-13.png}
+    \caption{The \texttt{restricted-shell} Profile explicitly denying access to system directories and executable abstractions (\texttt{python}, \texttt{curl}, \texttt{bash}).}
+    \label{fig:apparmor_profile}
+\end{figure}
+
+These rules were systematically loaded onto the Apache processes, enforcing strict confinement boundaries on the application.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-26-43.png}
+    \caption{Verifying the application of the AppArmor execution profiles against Apache.}
+    \label{fig:apparmor_enforce}
+\end{figure}
+
+\section{Phase 6: Validation against Repeated Exploitation}
+With the confinement policies active, the exact same attack vectors were repeated through the web interface to assess mitigation efficiency.
+
+When injecting the \texttt{whoami} command or the Python reverse shell payload, the underlying kernel now intercept and immediately rejected the sub-process spawning requests. Both payloads returned \texttt{Permission denied} directly in the web application output instead of executing.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-26-58.png}
+    \caption{The reverse shell payload fails due to an OS-level permission violation against Python 3.}
+    \label{fig:fail_rce}
+\end{figure}
+
+The security mitigation was positively confirmed via the kernel's audit ring buffer (\texttt{dmesg}), generating explicit \texttt{apparmor="DENIED"} alerts linked directly to the application trying to step outside its permitted execution boundaries.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-31-15.png}
+    \caption{Kernel audit logs explicitly exposing AppArmor denying the execution of restricted binaries.}
+    \label{fig:dmesg}
+\end{figure}
+
+\section{Conclusion}
+The exercise fundamentally demonstrates the lethal progression of web application vulnerabilities when untethered. It highlights how minor application faults can rapidly pivot into total infrastructure compromise. Conversely, the introduction of AppArmor underscores the indispensability of Defense-in-Depth; by shifting security from the vulnerable application layer to the impassable kernel layer, the Remote Code Execution flaw was rendered entirely inert.
+
+\end{document}
