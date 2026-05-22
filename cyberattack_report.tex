@@ -83,6 +83,15 @@ The attacker first navigated to the main landing page of the application (\textt
     \label{fig:sqli}
 \end{figure}
 
+The SQL injection successfully bypassed the authentication, granting access to the system as shown below.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{../screens/Screenshot from 2026-05-22 13-08-28.png}
+    \caption{Successful login achieved after the SQL injection.}
+    \label{fig:sqli_success}
+\end{figure}
+
 \section{Phase 3: Exploitation and Remote Code Execution (RCE)}
 Once authenticated, the attacker navigated to the restricted admin page, locating an internal administrative panel labeled ``Diagnostic Serveur''. This utility, meant for server debugging, was identified as vulnerable to OS Command Injection due to improper sanitization of semicolons (\texttt{;}).
 
@@ -93,7 +102,7 @@ Once authenticated, the attacker navigated to the restricted admin page, locatin
     \label{fig:vuln_rce}
 \end{figure}
 
-With execution capabilities confirmed, the attacker constructed an intricate Python 3 reverse shell script to launch a persistent connection. Figure \ref{fig:rev_shell_script} displays the exact script utilized for the payload.
+With execution capabilities confirmed, the attacker decided to leverage the OS command injection vulnerability in \texttt{admin/diagnostic} to obtain a reverse shell. First, a Netcat listener was opened on the attacking machine using the command \texttt{nc -lvp 4444}. Then, an intricate Python 3 reverse shell script was constructed to execute the connection back to the attacker. Figure \ref{fig:rev_shell_script} displays the exact script utilized for the payload.
 
 \begin{figure}[H]
     \centering
