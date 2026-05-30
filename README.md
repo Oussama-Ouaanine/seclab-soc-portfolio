@@ -169,6 +169,7 @@ All academic, technical, and business documentation is available in the `docs/` 
 
 ### 3. Configuration & Defense Playbooks
 - `docs/defense/`: Technical deployment notes for AppArmor, Falco, and Suricata.
+- `docs/defense/configs/`: operational configuration files exported directly from the target webserver, including Filebeat, Auditbeat, Journald, and Falco profiles.
 - `docs/vulnerabilities/`: List of the intentional flaws and CVEs integrated into the SecLab patient-zero application.
 
 ---
