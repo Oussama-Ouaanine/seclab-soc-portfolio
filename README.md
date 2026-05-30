@@ -176,4 +176,14 @@ All academic, technical, and business documentation is available in the `docs/` 
 
 ---
 
+## 🙏 Acknowledgments & Original Source
+The base vulnerable web application used in this laboratory ("SecLab") was originally created by [EMSICIR/SECLAB](https://github.com/EMSICIR/SECLAB) and provided as an educational training environment. 
+
+For the purpose of this advanced engineering project, the original application was heavily modified:
+- **Database Migration:** Transitioned the backend database engine to **PostgreSQL**.
+- **Architecture Shift:** Converted from a standalone Dockerized approach to a bare-metal file deployment (`/var/www/html`) to allow direct integration and testing with host-level OS defenses (AppArmor & Falco).
+- **Expansion:** Selected vulnerabilities and configurations were altered to align directly with the SOC-in-a-Box detection requirements.
+
+---
+
 *Developed as an End-of-Year Project (Cybersecurity Engineering) by Oussama Ouaanine, Nada Rihi, and Aya Er-raoudy.*
