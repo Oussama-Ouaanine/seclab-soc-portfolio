@@ -168,7 +168,7 @@ All academic, technical, and business documentation is available in the `docs/` 
 - `docs/gestion_projet/Questionnaire_Validation_Marche.md`: Market survey matrix (French/English) crafted to validate the "SOC-in-a-Box" need for SMEs.
 
 ### 3. Configuration & Defense Playbooks
-- `docs/defense/`: Technical deployment notes for AppArmor, Falco, and Suricata.
+- `docs/defense/`: Technical deployment notes for AppArmor, Falco, Suricata, and the [ELK Stack Installation Guide](docs/defense/elk_installation.md).
 - `docs/defense/configs/`: operational configuration files exported directly from the target webserver and SOC VM, including Filebeat, Auditbeat, Journald, Falco profiles, Suricata (`local.rules`), Elasticsearch, and Kibana.
 - `docs/vulnerabilities/`: List of the intentional flaws and CVEs integrated into the SecLab patient-zero application.
 
