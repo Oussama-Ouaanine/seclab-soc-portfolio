@@ -21,6 +21,8 @@ In a B2B entrepreneurial approach, this technical architecture has been designed
 
 ## 🏗️ Laboratory Architecture
 
+![Network Topology](docs/images/network_topology.png)
+
 The laboratory is based on an isolated virtualized environment (host-only internal LAN) structured around 3 Virtual Machines and a Host machine (Attacker):
 
 * **Host (Attacker):** Simulates attacks (Nmap, Netcat, browsers, malicious scripts).
