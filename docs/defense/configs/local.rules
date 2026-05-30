@@ -1,0 +1,26 @@
+alert http any any -> any any (msg:"SQLi OR 1=1"; content:"OR"; nocase; content:"1=1"; nocase; sid:1000030; rev:3;)
+alert http any any -> any any (msg:"SQLi UNION SELECT"; content:"UNION"; nocase; content:"SELECT"; nocase; sid:1000031; rev:3;)
+alert http any any -> any any (msg:"SQLi commentaire --"; content:"--"; sid:1000032; rev:3;)
+alert http any any -> any any (msg:"SQLi SLEEP"; content:"SLEEP("; nocase; sid:1000033; rev:3;)
+alert http any any -> any any (msg:"SCAN SQLmap"; http.user_agent; content:"sqlmap"; nocase; sid:1000010; rev:2;)
+alert http any any -> any any (msg:"SCAN Nikto"; http.user_agent; content:"Nikto"; nocase; sid:1000009; rev:2;)
+alert http any any -> any any (msg:"SCAN Ffuf"; http.user_agent; content:"ffuf"; nocase; sid:1000006; rev:2;)
+alert tcp any any -> any any (msg:"SCAN Nmap SYN"; flags:S; threshold: type threshold, track by_src, count 20, seconds 1; sid:1000001; rev:2;)
+alert tcp any any -> any any (msg:"SCAN Nmap XMAS"; flags:FPU; sid:1000004; rev:2;)
+# Nmap -sC -sV detection (service version scan)
+alert tcp any any -> any any (msg:"SCAN Nmap Service Version Scan -sV"; flow:to_server; flags:S; threshold: type threshold, track by_src, count 3, seconds 2; sid:1000040; rev:1;)
+
+# Nmap script scan -sC (envoie des probes applicatifs)
+alert tcp any any -> any any (msg:"SCAN Nmap Script Scan -sC"; flow:to_server; content:"Nmap"; nocase; sid:1000041; rev:1;)
+
+# Détection probe SSH de Nmap
+alert tcp any any -> any 22 (msg:"SCAN Nmap SSH Probe"; flow:to_server; content:"SSH-"; sid:1000042; rev:1;)
+
+# Détection probe HTTP de Nmap -sC
+alert http any any -> any any (msg:"SCAN Nmap HTTP Probe"; flow:to_server; http.user_agent; content:"Nmap"; nocase; sid:1000043; rev:1;)
+
+# Scan ports spécifiques 22,80,443,5432
+alert tcp any any -> any 22 (msg:"SCAN Port 22 SSH"; flags:S; threshold: type threshold, track by_src, count 3, seconds 5; sid:1000044; rev:1;)
+alert tcp any any -> any 80 (msg:"SCAN Port 80 HTTP"; flags:S; threshold: type threshold, track by_src, count 3, seconds 5; sid:1000045; rev:1;)
+alert tcp any any -> any 443 (msg:"SCAN Port 443 HTTPS"; flags:S; threshold: type threshold, track by_src, count 3, seconds 5; sid:1000046; rev:1;)
+alert tcp any any -> any 5432 (msg:"SCAN Port 5432 PostgreSQL"; flags:S; threshold: type threshold, track by_src, count 3, seconds 5; sid:1000047; rev:1;)
