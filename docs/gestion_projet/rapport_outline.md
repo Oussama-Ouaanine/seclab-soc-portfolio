@@ -1,80 +1,252 @@
-# Plan du Rapport Final : Projet de Fin d'Année & Entrepreneuriat
-
-Ce plan est directement inspiré de la structure rigoureuse de votre ancien projet académique (SMPP), en y intégrant parfaitement la dimension **Business / Entrepreneuriat** demandée par votre professeur, ainsi que les spécificités de votre nouvelle architecture de cybersécurité (SecLab, Suricata, Falco, AppArmor, ELK).
-
-L'idée est de présenter ce projet technique non pas comme un simple "TP", mais comme le développement d'un véritable **Produit B2B de Cybersécurité (SOC-in-a-Box / Service MDR pour PME)**.
+### INTRODUCTION GÉNÉRALE
+- Contexte global de la sécurité des infrastructures Linux
+- Problématique de la détection monocouche et des contraintes de ressources
+- Objectifs du projet — Architecture SOC-in-a-Box multi-couches
+- Présentation du double positionnement : laboratoire académique + prototype commercial
+- Annonce du plan du rapport
 
 ---
 
-## 1. Introduction Générale
-- **1.1 Contexte général :** L'explosion des cyberattaques ciblant les serveurs web d'entreprises.
-- **1.2 Problématique :** Comment offrir aux PME une détection multi-couches (Défense en Profondeur) abordable, automatisée et efficace face à des menaces avancées ?
-- **1.3 Motivation et opportunité métier :** Le besoin croissant d'externaliser la sécurité (Managed Detection & Response) pour les entreprises n'ayant pas de budget pour un SOC interne.
-- **1.4 Objectifs du projet :** Concevoir une architecture combinant NIDS, HIDS, MAC et SIEM.
-- **1.5 Méthodologie adoptée :** Approche classique en V (Conception, Déploiement, Attaque simulée, Validation).
-- **1.6 Gestion de projet et Planification :** *(Reprise du Cahier des Charges)*
-  - 1.6.1 Découpage des phases du projet.
-  - 1.6.2 Planification temporelle (Diagramme de Gantt).
-  - 1.6.3 Ordonnancement des tâches (Diagramme de PERT et Chemin critique).
+### CHAPITRE 1 — Présentation du Cadre de Projet
 
-## 2. État de l'art et Étude de Marché (Volet Entrepreneuriat)
-*Cette section combine la théorie académique et l'analyse de marché business.*
-- **2.1 État de l'art technique : La Défense en Profondeur**
-  - 2.1.1 Les Systèmes de Détection d'Intrusions (NIDS vs HIDS).
-  - 2.1.2 Le Contrôle d'Accès Obligatoire (MAC - AppArmor).
-  - 2.1.3 Centralisation des logs (SIEM : Elastic Stack).
-- **2.2 Outils et solutions concurrentes sur le marché**
-  - 2.2.1 Les géants du marché (CrowdStrike, Palo Alto, AWS GuardDuty).
-  - 2.2.2 Notre positionnement : Approche 100% Open-Source adaptée aux PME.
-- **2.3 Étude de Marché Stratégique**
-  - 2.3.1 **Analyse PESTEL :** Politique (RGPD), Économique (Coût des failles), Technologique (eBPF et Cloud).
-  - 2.3.2 **Analyse SWOT :** Forces (Solution open-source intégrée), Faiblesses (Configuration requise), Opportunités, Menaces.
-  - 2.3.3 **Analyse des 5 Forces de Porter :** Concurrence, Pouvoir des clients/fournisseurs, Nouveaux entrants, Remplaçants.
+#### 1.1 Contexte et constat de départ
+- 1.1.1 La vulnérabilité systémique des serveurs d'entreprise basés sur Linux
+- 1.1.2 Limites de la détection monocouche actuelle
+- 1.1.3 Présentation de l'application web cible — SecLab (développée sur mesure, remplace DVWA/Juice Shop)
 
-## 3. Analyse des Besoins et Étude de Faisabilité (Volet Entrepreneuriat)
-- **3.1 Besoins Fonctionnels et Techniques (Cahier des charges)**
-  - 3.1.1 Besoins de détection temps réel et de journalisation.
-  - 3.1.2 Contraintes de performances matérielles.
-- **3.2 Étude de Faisabilité et Business Plan**
-  - 3.2.1 **Étude Technique :** Matériels informatiques (Serveurs, RAM, TAPs réseau) et profils RH nécessaires (Ingénieurs SOC, Développeurs).
-  - 3.2.2 **Étude Commerciale & Marketing :**
-    - Politique Produit : Boîtier de sondes réseau (Hardware) + Monitoring (SaaS).
-    - Politique Prix : Modèle de facturation par abonnement mensuel (MSSP).
-    - Politique Place & Promotion : Vente B2B, Webinaires et démos Live Hacking.
-  - 3.2.3 **Étude Financière :** Budget prospection, Acquisition, Taux de conversion prospects, Taux de Churn d'abonnés estimé.
+#### 1.2 Cartographie des frustrations et formulation du problème
+- 1.2.1 Analyse des frustrations vécues (Équipe, Étudiants, Professionnels)
+- 1.2.2 Méthode des "5 Pourquoi" et approche défectuologique (identification de la cause racine)
+- 1.2.3 Formulation structurée des trois énoncés de problèmes clés
 
-## 4. Conception Globale et Architecture Technique
-- **4.1 Objectifs de l'architecture :** Isoler et surveiller l'application cible.
-- **4.2 Description des composants :**
-  - 4.2.1 Le serveur vulnérable Target (Application "SecLab" avec base PostgreSQL).
-  - 4.2.2 La Sonde Réseau (Suricata en mode passif/SPAN).
-  - 4.2.3 La Sonde Hôte avec eBPF (Falco) et la prévention (AppArmor).
-  - 4.2.4 Le pipeline Collecte/SIEM (Filebeat, Elasticsearch, Kibana).
-- **4.3 Schéma d'architecture proposé :** Topologie du réseau virtuel complet.
-- **4.4 Flux opérationnel détaillé :** Comment une requête d'un attaquant transite et génère une alerte SOC.
+#### 1.3 Idéation et opportunité de la solution
+- 1.3.1 Brainwriting 6-3-5 et SCAMPER technologique (génération des briques de solution)
+- 1.3.2 Matrice Impact / Faisabilité (arbitrage des alternatives)
+- 1.3.3 Choix et structuration de l'idée retenue
 
-## 5. Implémentation et Phase Offensive (Validation par l'Attaque)
-*Démontrez ici que la solution a une utilité face aux assauts.*
-- **5.1 Déploiement de l'environnement :** Configuration des VMs, réseau host-only.
-- **5.2 Scénario d'attaque : La "Cyber Kill Chain"**
-  - 5.2.1 Phase 1 : Reconnaissance réseau (Scans Nmap).
-  - 5.2.2 Phase 2 : Interaction web (Découverte de l'application SecLab).
-  - 5.2.3 Phase 3 : Exploitation (Injections SQL d'authentification et attaques SSRF/XSS).
-  - 5.2.4 Phase 4 : Accès initial / Compromission (Reverse Shell via diagnostic.php).
-  - 5.2.5 Phase 5 : Post-exploitation (Lecture de /etc/shadow).
+---
 
-## 6. Résultats : Détection et Supervision (Phase Défensive)
-*La validation de votre prototype.*
-- **6.1 Détection Réseau avec Suricata :** Preuves de capture des payloads SQLi/XSS sur le fil (Alertes eve.json).
-- **6.2 Surveillance Syscalls avec Falco :** Détection du Shell clandestin bash et connexions sortantes.
-- **6.3 Prévention active avec AppArmor :** Preuve des blocages (AVC DENIED) empêchant le pire.
-- **6.4 Visualisation SOC avec Kibana :**
-  - 6.4.1 Ingestion via Filebeat et indexation Elasticsearch.
-  - 6.4.2 Présentation du Dashboard SOC global avec graphiques et alertes triées.
-- **6.5 Limites et améliorations possibles :** L'angle mort du chiffrement TLS sans proxy de déchiffrement.
+### CHAPITRE 2 — Analyse Stratégique & Étude de Marché
 
-## 7. Conclusion et Perspectives
-- **7.1 Synthèse de la réalisation technique :** Déploiement d'un pipeline SIEM bout-en-bout.
-- **7.2 Synthèse du modèle d'affaire (Entrepreneuriat) :** Transformation d'un PoC académique en idée de start-up MDR B2B.
-- **7.3 Apports du projet et Retour d'expérience.**
-- **7.4 Perspectives futures :** L'intégration de Machine Learning et de SOAR pour la réponse automatisée.
+#### 2.1 Analyse de l'environnement sectoriel
+- 2.1.1 Le marché de la cybersécurité et de la supervision des logs
+- 2.1.2 Analyse PESTEL du secteur de la gestion des cybermenaces
+
+#### 2.2 Analyse concurrentielle et positionnement
+- 2.2.1 Benchmark concurrentiel des solutions existantes
+  - Splunk, Security Onion, Wazuh — nom, type, taille, ancienneté, prix, forces, faiblesses
+- 2.2.2 Les 5 Forces de Porter — attractivité et intensité concurrentielle du secteur
+- 2.2.3 Analyse des fournisseurs
+  - Types de fournisseurs (hébergement, communautés open-source)
+  - Prix, qualité, stabilité, support technique, dépendances critiques
+- 2.2.4 Analyse SWOT consolidée du projet
+- 2.2.5 Définition de la Proposition de Valeur Unique (UVP)
+
+---
+
+### CHAPITRE 3 — Viabilité Entrepreneuriale & Modèle d'Affaires
+
+#### 3.0 Genèse et origine de l'idée entrepreneuriale
+- Source de l'idée et observation ayant conduit au projet
+- Opportunité identifiée sur le marché PME sans SOC
+- Inspirations et déclencheurs du projet
+
+#### 3.1 Présentation entrepreneuriale de la solution
+- Description de la solution en tant que produit/service commercialisable
+- Fonctionnalités principales et technologies utilisées (Suricata, Falco, AppArmor, ELK)
+- Valeur ajoutée et avantage concurrentiel différenciateur
+
+#### 3.2 Marketing stratégique (SCP + Mix)
+
+##### 3.2.1 Segmentation
+- Groupes d'utilisateurs potentiels : PME, administrateurs systèmes, milieu académique
+- Profil type : niveau technologique, comportements digitaux, problèmes recherchés
+
+##### 3.2.2 Ciblage
+- Segment principal retenu : PME Linux sans équipe SOC
+- Potentiel de rentabilité et de croissance du segment cible
+
+##### 3.2.3 Positionnement
+- Image souhaitée : innovant, économique, souverain, accessible, open-source
+- Principal avantage compétitif : légèreté (10 Go RAM), multi-couches, on-premise
+
+##### 3.2.4 Stratégie Marketing Mix (4P)
+- **Produit / Service** : stack de sécurité Linux multi-couches, déployable sur Ubuntu 22.04
+- **Prix** : tarification selon nombre de serveurs et niveau de supervision (pénétration)
+- **Distribution** : vente directe, GitHub, partenariats intégrateurs
+- **Communication** : réseaux sociaux, SEO, événements cybersécurité, bouche-à-oreille
+
+#### 3.3 Architecture du modèle d'affaires (Business Model Canvas)
+- 3.3.1 Les 9 blocs du BMC détaillés
+- 3.3.2 Choix du modèle économique : Professional Services + Support Open Core
+
+#### 3.4 Étude de faisabilité technique entrepreneuriale
+- Matériels nécessaires au déploiement commercial (quantités, coûts)
+- Profils humains requis : développeurs Linux/sécurité, analystes SOC, commerciaux
+- Autres ressources nécessaires au fonctionnement
+
+#### 3.5 Étude de faisabilité financière
+
+##### 3.5.1 Données quantitatives de l'étude terrain
+- Analyse des résultats du questionnaire terrain
+- Indicateurs de disposition à payer et demande potentielle
+
+##### 3.5.2 Investissement initial
+| Élément d'investissement | Quantité | Coût unitaire | Coût total |
+|--------------------------|----------|---------------|------------|
+| Développement logiciel | | | |
+| Hébergement / Cloud | | | |
+| Achat matériel informatique | | | |
+| Licences / outils | | | |
+| Marketing de lancement | | | |
+| Création juridique | | | |
+| Recrutement | | | |
+| **TOTAL** | | | |
+
+##### 3.5.3 Prévisions de ventes (CA mensuel prévisionnel)
+##### 3.5.4 Charges variables et charges fixes mensuelles
+##### 3.5.5 Résultat prévisionnel, marge brute et taux de marge
+##### 3.5.6 Calcul du Seuil de Rentabilité (SR)
+- Formule : SR = Charges fixes ÷ Taux de marge sur coût variable
+##### 3.5.7 Besoin en Fonds de Roulement (BFR)
+- BFR = Stocks + Créances clients – Dettes fournisseurs
+##### 3.5.8 Trésorerie prévisionnelle
+- Apport initial, revenus prévus, dépenses prévues, analyse de viabilité globale
+
+#### 3.6 Aspect juridique
+- Forme juridique choisie (SARL, SAS ou équivalent marocain)
+- Justification du choix de la structure
+- Cadre réglementaire applicable : Loi 09-08, RGPD, NIS2, ISO 27001
+- Gestion des risques juridiques et conformité
+
+#### 3.7 Stratégie de développement & scalabilité
+- Perspectives d'évolution à court, moyen et long terme
+- Scalabilité de la solution (modularité des briques techniques)
+- Évolutions envisagées : SOAR, IA comportementale, mode cloud hybride
+
+---
+
+### CHAPITRE 4 — Étude Technique Comparative des Solutions de Surveillance
+
+#### 4.1 Critères de sélection et contraintes architecturales
+- Enveloppe matérielle stricte : 10 Go RAM alloués aux VMs (VM1 : 2 Go, VM2 : 2 Go, VM3 : 6 Go)
+- Axes d'évaluation : empreinte mémoire, vélocité, modularité, pérennité
+
+#### 4.2 Analyse comparative des solutions de détection réseau (NIDS)
+- Snort (monothread) vs. Suricata (multithread natif)
+- Justification du choix de Suricata : format EVE JSON, performances multi-cœurs
+
+#### 4.3 Analyse comparative de la surveillance de l'hôte et du noyau (HIDS)
+- Auditd (écritures disque I/O intensives) vs. Falco (sondes légères eBPF)
+- Justification du choix de Falco : visibilité comportementale en espace noyau, faible overhead
+
+#### 4.4 Analyse comparative des solutions de centralisation (SIEM)
+- Wazuh (agent lourd, OpenSearch) vs. Stack ELK optimisée (Filebeat Go + Auditbeat)
+- Stratégie de réduction de l'empreinte matérielle : limitation JVM Elasticsearch à 2 Go
+
+---
+
+### CHAPITRE 5 — Planification & Management de Projet
+
+#### 5.1 Cadrage et cycle de vie du projet
+- 5.1.1 Charte de projet et objectifs SMART
+- 5.1.2 Choix et justification du cycle de développement : Cycle en V
+
+#### 5.2 Décomposition et ordonnancement des tâches
+- 5.2.1 Work Breakdown Structure (WBS) — 5 lots de travail
+- 5.2.2 Ordonnancement des tâches : Réseau PERT et Chemin Critique
+- 5.2.3 Planification temporelle globale : Diagramme de Gantt sur 6 semaines
+
+#### 5.3 Organisation de l'équipe et maîtrise des risques
+- 5.3.1 Matrice RACI — répartition des rôles et responsabilités
+- 5.3.2 Registre des risques projet et matrice d'impact (atténuations techniques)
+- 5.3.3 Application du principe de Pareto (80/20) aux risques majeurs
+
+---
+
+### CHAPITRE 6 — Ingénierie des Besoins, Conception & Modélisation
+
+#### 6.1 Spécification des exigences du système (MoSCoW)
+- 6.1.1 Must have : détection passive (Suricata IDS), surveillance eBPF (Falco), MAC enforce (AppArmor), pipeline ELK
+- 6.1.2 Should have : scénarisation Cyber Kill Chain 6 phases, normalisation ECS
+- 6.1.3 Could have : alertes déportées Slack/Discord via Webhook, automatisation Ansible
+- 6.1.4 Won't have : mode IPS actif (risque faux positifs bloquants), déploiement cloud (hors périmètre)
+
+#### 6.2 Analyse fonctionnelle et Cas d'Utilisation (UML)
+- 6.2.1 Identification et profilage des acteurs : Attaquant, Analyste SOC, Système SIEM
+- 6.2.2 Diagramme de Cas d'Utilisation global (Use Case UML)
+
+#### 6.3 Conception de l'Architecture Technique & Topologie Réseau
+- 6.3.1 Topologie réseau : 3 VMs en réseau host-only isolé
+  - VM1 — SecLab (2 Go) : Apache, Falco, AppArmor, Filebeat, Auditbeat
+  - VM2 — IDS (2 Go) : Suricata
+  - VM3 — SOC (6 Go) : Elasticsearch, Kibana
+  - Hôte — Attaquant : Nmap, FFUF, Netcat
+- 6.3.2 Rôle technique de chaque machine et flux de logs
+
+#### 6.4 Modélisation Dynamique des Flux de Détection
+- 6.4.1 Diagramme de Séquence UML : détection multi-couches d'un Reverse Shell
+- 6.4.2 Description pas-à-pas de la cinétique opérationnelle : Réseau → Noyau → MAC → SIEM
+
+---
+
+### CHAPITRE 7 — Réalisation, Implémentation & Recette
+
+#### 7.1 Préparation de l'environnement et déploiement des sondes
+- 7.1.1 Installation et initialisation de l'application cible SecLab sur Apache (VM1)
+- 7.1.2 Configuration et règles personnalisées du moteur réseau Suricata (VM2)
+- 7.1.3 Implémentation du pilote eBPF de Falco et écriture des macros comportementales (VM1)
+- 7.1.4 Durcissement système : profil AppArmor pour Apache en mode enforce (VM1)
+
+#### 7.2 Configuration du pipeline d'ingestion et centralisation SIEM
+- 7.2.1 Paramétrage Filebeat (logs Falco) et Auditbeat (syslogs + AppArmor logs) sur VM1
+- 7.2.2 Optimisation Elasticsearch — Heap Size JVM, création des index de sécurité (VM3)
+- 7.2.3 Conception des dashboards de sécurité unifiés sous Kibana (VM3)
+
+#### 7.3 Simulation de l'attaque et Cahier de Recette SOC
+- 7.3.1 Exécution pas-à-pas de la Cyber Kill Chain — 6 phases :
+  - Phase 1 : Reconnaissance (Nmap) → détecté par Suricata
+  - Phase 2 : Découverte de ressources (FFUF) → `index.php` trouvé
+  - Phase 3 : Injection SQL → authentification contournée → détecté par Suricata
+  - Phase 4 : Injection de commandes OS (`/admin/diagnostic.php`)
+  - Phase 5 : Reverse Shell → détecté par Falco
+  - Phase 6 : Escalade de privilèges (Dirty Pipe) → détecté par Falco
+- 7.3.2 Démonstration AppArmor avant/après en mode enforce
+  - Sans enforce : attaque complète réussie (RCE, reverse shell, root)
+  - Avec enforce : command injection bloquée, reverse shell impossible, escalade impossible
+- 7.3.3 Validation visuelle de la corrélation croisée (Réseau / Noyau / Système) sur Kibana
+- 7.3.4 Analyse des résultats et calcul du taux de faux positifs/négatifs
+
+---
+
+### CONCLUSION GÉNÉRALE
+- Synthèse technique des objectifs atteints
+  - Architecture 3 VMs fonctionnelle sous 10 Go de RAM (open-source souverain)
+  - Détection validée sur les 6 phases de la kill chain
+  - Confinement AppArmor démontré en mode enforce
+- Apports du projet pour les différents acteurs : PME, administrateurs Linux, milieu académique
+- Limites de la solution
+  - Trafic HTTPS non inspectable sans déchiffrement TLS préalable
+  - Falco : détection mais pas de blocage
+  - Faux positifs possibles selon la granularité des règles
+- Perspectives d'évolutions technologiques : SOAR, IA comportementale, mode cloud hybride
+
+---
+
+### ANNEXES
+- **Annexe A** : Questionnaire de l'étude terrain et résultats bruts
+- **Annexe B** : Règles Suricata personnalisées (scans Nmap, SQL injection)
+- **Annexe C** : Macros Falco (règles comportementales — reverse shell, escalade de privilèges)
+- **Annexe D** : Profil AppArmor complet (Apache — mode enforce)
+- **Annexe E** : Configuration Filebeat (logs Falco) et Auditbeat (syslogs + AppArmor)
+- **Annexe F** : Mappings Elasticsearch et index de sécurité
+- **Annexe G** : Captures d'écran des Dashboards Kibana (timeline, corrélation, alertes)
+
+---
+
+### BIBLIOGRAPHIE & RÉFÉRENCES
+
+---
+
+*PFA — Référence Complète | Année universitaire 2025/2026*
+*Ingénierie Informatique — Cybersécurité | Usage académique*
